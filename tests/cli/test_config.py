@@ -53,7 +53,7 @@ channels:
     try:
         with make_temp_condarc(condarc) as rc:
             rc_path = rc
-            run_command(Commands.CONFIG, '--file', rc, '--add', 'channels', 'test')
+            run_command(Commands.CONFIG, '--file', rc, '--add', 'channel', 'test')
     except LoadError as err:
         error1 = "Load Error: in "
         error2 = "on line 1, column 8. Invalid YAML"
@@ -67,7 +67,7 @@ def test_config_command_basics():
         # Test that creating the file adds the defaults channel
     with make_temp_condarc() as rc:
         stdout, stderr, return_code = run_command(Commands.CONFIG, '--file', rc, '--add',
-                                                  'channels', 'test')
+                                                  'channel', 'test')
         assert stdout == stderr == ''
         assert _read_test_condarc(rc) == """\
 channels:
@@ -81,7 +81,7 @@ channels:
     with make_temp_condarc() as rc:
         # When defaults is explicitly given, it should not be added
         stdout, stderr, return_code = run_command(Commands.CONFIG, '--file', rc, '--add',
-                                                  'channels', 'test', '--add', 'channels',
+                                                  'channel', 'test', '--add', 'channel',
                                                   'defaults', use_exception_handler=True)
         assert stdout == ''
         assert stderr.strip() == "Warning: 'defaults' already in 'channels' list, moving to the top"
@@ -93,10 +93,10 @@ channels:
     # Duplicate keys should not be added twice
     with make_temp_condarc() as rc:
         stdout, stderr, return_code = run_command(Commands.CONFIG, '--file', rc, '--add',
-                                                  'channels', 'test')
+                                                  'channel', 'test')
         assert stdout == stderr == ''
         stdout, stderr, return_code = run_command(Commands.CONFIG, '--file', rc, '--add',
-                                                  'channels', 'test', use_exception_handler=True)
+                                                  'channel', 'test', use_exception_handler=True)
         assert stdout == ''
         assert stderr.strip() == "Warning: 'test' already in 'channels' list, moving to the top"
         assert _read_test_condarc(rc) == """\
@@ -108,10 +108,10 @@ channels:
     # Test append
     with make_temp_condarc() as rc:
         stdout, stderr, return_code = run_command(Commands.CONFIG, '--file', rc, '--add',
-                                                  'channels', 'test')
+                                                  'channel', 'test')
         assert stdout == stderr == ''
         stdout, stderr, return_code = run_command(Commands.CONFIG, '--file', rc, '--append',
-                                                  'channels', 'test', use_exception_handler=True)
+                                                  'channel', 'test', use_exception_handler=True)
         assert stdout == ''
         assert stderr.strip() == "Warning: 'test' already in 'channels' list, moving to the bottom"
         assert _read_test_condarc(rc) == """\
@@ -123,10 +123,10 @@ channels:
     # Test duoble remove of defaults
     with make_temp_condarc() as rc:
         stdout, stderr, return_code = run_command(Commands.CONFIG, '--file', rc, '--remove',
-                                                  'channels', 'defaults')
+                                                  'channel', 'defaults')
         assert stdout == stderr == ''
         stdout, stderr, return_code = run_command(Commands.CONFIG, '--file', rc, '--remove',
-                                                  'channels', 'defaults',
+                                                  'channel', 'defaults',
                                                   use_exception_handler=True)
         assert stdout == ''
         assert "CondaKeyError: 'channels': 'defaults' is not in the 'channels' " \
@@ -178,8 +178,8 @@ channel_alias: http://alpha.conda.anaconda.org
 --set always_yes True
 --set changeps1 False
 --set channel_alias http://alpha.conda.anaconda.org
---add channels 'defaults'   # lowest priority
---add channels 'test'   # highest priority
+--add channel 'defaults'   # lowest priority
+--add channel 'test'   # highest priority
 --add create_default_packages 'numpy'
 --add create_default_packages 'ipython'\
 """
@@ -189,8 +189,8 @@ channel_alias: http://alpha.conda.anaconda.org
                                            '--get', 'channels')
 
         assert stdout.strip() == """\
---add channels 'defaults'   # lowest priority
---add channels 'test'   # highest priority\
+--add channel 'defaults'   # lowest priority
+--add channel 'test'   # highest priority\
 """
         assert stderr == ""
 
@@ -207,8 +207,8 @@ channel_alias: http://alpha.conda.anaconda.org
 
         assert stdout.strip() == """\
 --set changeps1 False
---add channels 'defaults'   # lowest priority
---add channels 'test'   # highest priority\
+--add channel 'defaults'   # lowest priority
+--add channel 'test'   # highest priority\
 """
         assert stderr == ""
 
@@ -269,8 +269,8 @@ always_yes: true
         assert stdout.strip() == """\
 --set always_yes True
 --set changeps1 False
---add channels 'defaults'   # lowest priority
---add channels 'test'   # highest priority
+--add channel 'defaults'   # lowest priority
+--add channel 'test'   # highest priority
 --add create_default_packages 'numpy'
 --add create_default_packages 'ipython'\
 """
@@ -356,7 +356,7 @@ def test_config_command_remove_force():
                                                      'always_yes': True}
 
         stdout, stderr, return_code = run_command(Commands.CONFIG, '--file', rc,
-                                           '--remove', 'channels', 'test', use_exception_handler=True)
+                                           '--remove', 'channel', 'test', use_exception_handler=True)
         assert stdout == ''
         assert "CondaKeyError: 'channels': 'test' is not in the 'channels' " \
                "key of the config file" in stderr

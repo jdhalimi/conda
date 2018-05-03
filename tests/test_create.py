@@ -283,7 +283,7 @@ class IntegrationTests(TestCase):
                 assert_package_is_installed(prefix, 'python-2')
 
                 # regression test for #4513
-                run_command(Commands.CONFIG, prefix, "--add channels https://repo.continuum.io/pkgs/not-a-channel")
+                run_command(Commands.CONFIG, prefix, "--add channel https://repo.continuum.io/pkgs/not-a-channel")
                 stdout, stderr = run_command(Commands.SEARCH, prefix, "python --json")
                 packages = json.loads(stdout)
                 assert len(packages) >= 1
@@ -958,8 +958,8 @@ class IntegrationTests(TestCase):
 
     def test_rpy_search(self):
         with make_temp_env("python=3.5") as prefix:
-            run_command(Commands.CONFIG, prefix, "--add channels https://repo.anaconda.com/pkgs/free")
-            run_command(Commands.CONFIG, prefix, "--remove channels defaults")
+            run_command(Commands.CONFIG, prefix, "--add channel https://repo.anaconda.com/pkgs/free")
+            run_command(Commands.CONFIG, prefix, "--remove channel defaults")
             stdout, stderr = run_command(Commands.CONFIG, prefix, "--show", "--json")
             json_obj = json_loads(stdout)
             assert 'defaults' not in json_obj['channels']
@@ -973,7 +973,7 @@ class IntegrationTests(TestCase):
             assert json_obj['exception_name'] == 'PackagesNotFoundError'
 
             # add r channel
-            run_command(Commands.CONFIG, prefix, "--add channels r")
+            run_command(Commands.CONFIG, prefix, "--add channel r")
             stdout, stderr = run_command(Commands.CONFIG, prefix, "--show", "--json")
             json_obj = json_loads(stdout)
             assert 'r' in json_obj['channels']
@@ -984,8 +984,8 @@ class IntegrationTests(TestCase):
 
     def test_clone_offline_multichannel_with_untracked(self):
         with make_temp_env("python=3.5") as prefix:
-            run_command(Commands.CONFIG, prefix, "--add channels https://repo.anaconda.com/pkgs/free")
-            run_command(Commands.CONFIG, prefix, "--remove channels defaults")
+            run_command(Commands.CONFIG, prefix, "--add channel https://repo.anaconda.com/pkgs/free")
+            run_command(Commands.CONFIG, prefix, "--remove channel defaults")
 
             run_command(Commands.INSTALL, prefix, "-c conda-test flask")
 
@@ -1286,7 +1286,7 @@ class IntegrationTests(TestCase):
         try:
             prefix = make_temp_prefix(str(uuid4())[:7])
             channel_url = "https://conda.anaconda.org/t/cqgccfm1mfma/data-portal"
-            run_command(Commands.CONFIG, prefix, "--add channels %s" % channel_url)
+            run_command(Commands.CONFIG, prefix, "--add channel %s" % channel_url)
             stdout, stderr = run_command(Commands.CONFIG, prefix, "--show")
             yml_obj = yaml_load(stdout)
             assert yml_obj['channels'] == [channel_url, 'defaults']
@@ -1317,8 +1317,8 @@ class IntegrationTests(TestCase):
         try:
             prefix = make_temp_prefix(str(uuid4())[:7])
             channel_url = "https://conda.anaconda.org/kalefranz"
-            run_command(Commands.CONFIG, prefix, "--add channels %s" % channel_url)
-            run_command(Commands.CONFIG, prefix, "--remove channels defaults")
+            run_command(Commands.CONFIG, prefix, "--add channel %s" % channel_url)
+            run_command(Commands.CONFIG, prefix, "--remove channel defaults")
             stdout, stderr = run_command(Commands.CONFIG, prefix, "--show")
             yml_obj = yaml_load(stdout)
             assert yml_obj['channels'] == [channel_url]
@@ -1336,8 +1336,8 @@ class IntegrationTests(TestCase):
         try:
             prefix = make_temp_prefix(str(uuid4())[:7])
             channel_url = "https://conda.anaconda.org/t/zlZvSlMGN7CB/kalefranz"
-            run_command(Commands.CONFIG, prefix, "--add channels %s" % channel_url)
-            run_command(Commands.CONFIG, prefix, "--remove channels defaults")
+            run_command(Commands.CONFIG, prefix, "--add channel %s" % channel_url)
+            run_command(Commands.CONFIG, prefix, "--remove channel defaults")
             stdout, stderr = run_command(Commands.CONFIG, prefix, "--show")
             yml_obj = yaml_load(stdout)
             assert yml_obj['channels'] == [channel_url]

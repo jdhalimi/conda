@@ -348,7 +348,7 @@ def configure_parser_config(sub_parsers):
 
     Add the conda-canary channel:
 
-        conda config --add channels conda-canary
+        conda config --add channel conda-canary
 
     Set the output verbosity to level 3 (highest) for the current activate environment:
 

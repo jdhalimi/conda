@@ -260,7 +260,8 @@ def execute_config(args, parser):
                 for q, item in enumerate(reversed(items)):
                     # Use repr so that it can be pasted back in to conda config --add
                     if key == "channels" and q in (0, numitems-1):
-                        print("--add", key, repr(item),
+                        effective_key = "channel"
+                        print("--add", effective_key, repr(item),
                               "  # lowest priority" if q == 0 else "  # highest priority")
                     else:
                         print("--add", key, repr(item))
@@ -279,6 +280,8 @@ def execute_config(args, parser):
     # prepend, append, add
     for arg, prepend in zip((args.prepend, args.append), (True, False)):
         for key, item in arg:
+            if key == "channel":
+                key = "channels"
             if key == 'channels' and key not in rc_config:
                 rc_config[key] = ['defaults']
             if key not in sequence_parameters:
@@ -315,6 +318,8 @@ def execute_config(args, parser):
 
     # Remove
     for key, item in args.remove:
+        if key == "channel":
+            key = "channels"
         key, subkey = key.split('.', 1) if '.' in key else (key, None)
         if key not in rc_config:
             if key != 'channels':
